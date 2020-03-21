@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -40,30 +41,41 @@ public class TodoServiceImpl implements TodoService {
         }
 
         @Override
-        public Long addTask(String username, String password, Task task) {
+        public Task addTask(String username, String password, Task task) {
                 if (!login(username, password)) {
-                        return -1L;
+                        return new Task();
                 }
                 User user = userRepository.findByUsername(username);
                 task.setUser(user);
-                Task savedTask = taskRepository.save(task);
-                return savedTask.getId();
+                return taskRepository.save(task);
         }
 
         @Override
-        public boolean changeTask(String username, String password, Task task) {
-                return login(username, password);
-                //todo
-        }
-
-        @Override
-        public boolean removeTask(String username, String password, Long taskId) {
+        public Task changeTask(String username, String password, Long taskId, Task task) {
                 if (!login(username, password)) {
-                        return false;
+                        return new Task();
                 }
-                //todo
+                return taskRepository.findById(taskId)
+                        .map(t -> {
+                                t.setParentTask(task.getParentTask());
+                                t.setUser(task.getUser());
+                                t.setEstimatedFinishTime(task.getEstimatedFinishTime());
+                                t.setPrerequisites(task.getPrerequisites());
+                                return taskRepository.save(t);
+                        }).orElseGet(() -> {
+                                task.setId(taskId);
+                                return taskRepository.save(task);
+                        });
+        }
+
+        @Override
+        // todo problem with JPA annotations, most probably samotehing with bidirectional mapping or cascade
+        public void removeTask(String username, String password, Long taskId) {
+                if (!login(username, password)) {
+                        //throw exception
+                        return;
+                }
                 taskRepository.deleteById(taskId);
-                return true;
         }
 
         @Override
@@ -75,8 +87,15 @@ public class TodoServiceImpl implements TodoService {
         }
 
         @Override
-        public Long addSubTask(String username, String password, Long taskId, Task task) {
-                return null;
+        public Task addSubTask(String username, String password, Long taskId, Task task) {
+                Optional<Task> parentTask = taskRepository.findById(taskId);
+                if (parentTask.isEmpty()) {
+                        return new Task();
+                }
+
+                task.setUser(parentTask.get().getUser());
+                task.setParentTask(parentTask.get());
+                return taskRepository.save(task);
         }
 
 

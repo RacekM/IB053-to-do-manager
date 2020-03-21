@@ -73,6 +73,7 @@ public class ToDoManagerApplication {
 
                         Task task = new Task();
                         task.setUser(joe);
+                        task.setEstimatedFinishTime(10L);
                         System.out.println(taskRepository.findAllByUser_Id(joe.getId()).isEmpty());
                         taskRepository.save(task);
                         System.out.println((taskRepository.findAllByUser_Id(joe.getId()).size() == 1));

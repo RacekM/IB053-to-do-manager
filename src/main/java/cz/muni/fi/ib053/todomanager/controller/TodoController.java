@@ -27,24 +27,25 @@ public class TodoController {
         }
 
         @PostMapping("/tasks")
-        public Long addTask(@RequestHeader("username") String username, @RequestHeader("password") String password, @RequestBody Task task) {
+        public Task addTask(@RequestHeader("username") String username, @RequestHeader("password") String password, @RequestBody Task task) {
                 return toDoService.addTask(username, password, task);
         }
 
         @PostMapping("/tasks/{taskId}")
-        public Long addTask(@RequestHeader("userName") String username, @RequestHeader("password") String password, @PathVariable Long taskId,
+        public Task addSubTask(@RequestHeader("userName") String username, @RequestHeader("password") String password, @PathVariable Long taskId,
                             @RequestBody Task task) {
                 return toDoService.addSubTask(username, password, taskId, task);
         }
 
-        @PutMapping("/tasks")
-        public boolean changeTask(@RequestHeader("username") String username, @RequestHeader("password") String password, @RequestBody Task task) {
-                return toDoService.changeTask(username, password, task);
+        @PutMapping("/tasks/{taskId}")
+        public Task changeTask(@RequestHeader("username") String username, @RequestHeader("password") String password, @PathVariable Long taskId,
+                                  @RequestBody Task task) {
+                return toDoService.changeTask(username, password, taskId, task);
         }
 
         @DeleteMapping("/tasks/{taskId}")
-        public boolean removeTask(@RequestHeader("username") String username, @RequestHeader("password") String password, @PathVariable Long taskId) {
-                return toDoService.removeTask(username, password, taskId);
+        public void removeTask(@RequestHeader("username") String username, @RequestHeader("password") String password, @PathVariable Long taskId) {
+                toDoService.removeTask(username, password, taskId);
         }
 
         @GetMapping("/tasks/totalTime")
