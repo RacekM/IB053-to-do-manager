@@ -74,5 +74,10 @@ public class TodoServiceImpl implements TodoService {
                 return userRepository.findByUsername(username).getTodos().stream().mapToLong(Task::getEstimatedFinishTime).sum();
         }
 
+        @Override
+        public Long addSubTask(String username, String password, Long taskId, Task task) {
+                return null;
+        }
+
 
 }

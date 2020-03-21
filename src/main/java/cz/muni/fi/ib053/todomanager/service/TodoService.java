@@ -17,4 +17,6 @@ public interface TodoService {
         boolean removeTask(String username, String password, Long taskId);
 
         Long getTotalTime(String username, String password);
+
+        Long addSubTask(String username, String password, Long taskId, Task task);
 }

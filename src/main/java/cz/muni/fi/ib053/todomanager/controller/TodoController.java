@@ -1,12 +1,9 @@
 package cz.muni.fi.ib053.todomanager.controller;
 
 import cz.muni.fi.ib053.todomanager.entity.Task;
-import cz.muni.fi.ib053.todomanager.entity.User;
 import cz.muni.fi.ib053.todomanager.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,32 +17,39 @@ public class TodoController {
         }
 
         @PostMapping("/login")
-        public Boolean login(@RequestBody User user) {
-                return toDoService.login(user.getUsername(), user.getPassword());
+        public Boolean login(@RequestHeader("username") String username, @RequestHeader("password") String password) {
+                return toDoService.login(username, password);
+        }
+
+        @GetMapping("/tasks")
+        public List<Task> getTaskList(@RequestHeader("username") String username, @RequestHeader("password") String password) {
+                return toDoService.getTaskList(username, password);
         }
 
         @PostMapping("/tasks")
-        public List<Task> getTaskList(@RequestBody User user) {
-                return toDoService.getTaskList(user.getUsername(), user.getPassword());
+        public Long addTask(@RequestHeader("username") String username, @RequestHeader("password") String password, @RequestBody Task task) {
+                return toDoService.addTask(username, password, task);
         }
 
-        @PostMapping("/tasks/add")
-        //todo nepojde musi byt jeden objekt
-        public Long addTask(User user, Task task) {
-                return toDoService.addTask(user.getUsername(), user.getPassword(), task);
+        @PostMapping("/tasks/{taskId}")
+        public Long addTask(@RequestHeader("userName") String username, @RequestHeader("password") String password, @PathVariable Long taskId,
+                            @RequestBody Task task) {
+                return toDoService.addSubTask(username, password, taskId, task);
         }
 
-
-        public boolean changeTask(String username, String password, Task task) {
-                return true;
+        @PutMapping("/tasks")
+        public boolean changeTask(@RequestHeader("username") String username, @RequestHeader("password") String password, @RequestBody Task task) {
+                return toDoService.changeTask(username, password, task);
         }
 
-        public boolean removeTask(String username, String password, Long taskId) {
-                return true;
+        @DeleteMapping("/tasks/{taskId}")
+        public boolean removeTask(@RequestHeader("username") String username, @RequestHeader("password") String password, @PathVariable Long taskId) {
+                return toDoService.removeTask(username, password, taskId);
         }
 
-        public Long getTotalTime(String username, String password) {
-                return -1L;
+        @GetMapping("/tasks/totalTime")
+        public Long getTotalTime(@RequestHeader("username") String username, @RequestHeader("password") String password) {
+                return toDoService.getTotalTime(username, password);
         }
 
 
