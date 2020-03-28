@@ -1,5 +1,6 @@
 package cz.muni.fi.ib053.todomanager;
 
+import com.google.common.base.Predicates;
 import cz.muni.fi.ib053.todomanager.entity.Task;
 import cz.muni.fi.ib053.todomanager.entity.User;
 import cz.muni.fi.ib053.todomanager.repository.TaskRepository;
@@ -34,7 +35,7 @@ public class ToDoManagerApplication {
                 return new Docket(DocumentationType.SWAGGER_2)
                         .select()
                         .apis(RequestHandlerSelectors.any())
-                        .paths(PathSelectors.any())
+                        .paths(Predicates.not(PathSelectors.regex("/error.*")))//<6>, regex must be in double quotes.
                         .build()
                         .apiInfo(apiInfo())
                         .useDefaultResponseMessages(false)
