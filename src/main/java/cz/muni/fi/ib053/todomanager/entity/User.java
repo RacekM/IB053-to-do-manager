@@ -21,9 +21,9 @@ public class User {
 
         @OneToMany(mappedBy = "user",
                 cascade = CascadeType.ALL,
-                fetch = FetchType.EAGER,
+//                fetch = FetchType.EAGER,
                 orphanRemoval = true)
-        @Fetch(value = FetchMode.SUBSELECT)
+//        @Fetch(value = FetchMode.SUBSELECT)
         private List<Task> todos = new ArrayList<>();
 
         public User() {

@@ -80,7 +80,8 @@ public class TodoServiceImpl implements TodoService {
                         //throw exception
                         return;
                 }
-                taskRepository.deleteById(taskId);
+                taskRepository.findById(taskId).ifPresent(taskRepository::delete);
+//                taskRepository.deleteById(taskId);
         }
 
         @Override

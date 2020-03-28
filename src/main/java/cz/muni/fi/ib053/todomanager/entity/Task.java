@@ -15,20 +15,18 @@ public class Task {
         private Long id;
 
         @ManyToOne(fetch = FetchType.LAZY)
-        //@JoinColumn(name = "user_id", nullable = false)
         @JsonIgnore
         private User user;
 
         private Long estimatedFinishTime;
 
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY, optional = true)
         @JsonBackReference
         private Task parentTask;
 
         @OneToMany(mappedBy = "parentTask",
                 cascade = CascadeType.ALL,
-//                fetch = FetchType.EAGER,
-                orphanRemoval = true)
+                fetch = FetchType.EAGER)
         @JsonManagedReference
         private List<Task> prerequisites;
 
