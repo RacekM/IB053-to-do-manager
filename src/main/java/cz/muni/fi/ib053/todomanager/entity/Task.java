@@ -1,6 +1,8 @@
 package cz.muni.fi.ib053.todomanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,12 +22,14 @@ public class Task {
         private Long estimatedFinishTime;
 
         @ManyToOne
+        @JsonBackReference
         private Task parentTask;
 
         @OneToMany(mappedBy = "parentTask",
                 cascade = CascadeType.ALL,
-                fetch = FetchType.EAGER,
+//                fetch = FetchType.EAGER,
                 orphanRemoval = true)
+        @JsonManagedReference
         private List<Task> prerequisites;
 
         public Task() {
