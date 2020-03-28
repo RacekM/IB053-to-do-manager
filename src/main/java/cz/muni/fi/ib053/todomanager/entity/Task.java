@@ -20,7 +20,7 @@ public class Task {
 
         private Long estimatedFinishTime;
 
-        @ManyToOne(fetch = FetchType.LAZY, optional = true)
+        @ManyToOne(fetch = FetchType.LAZY)
         @JsonBackReference
         private Task parentTask;
 

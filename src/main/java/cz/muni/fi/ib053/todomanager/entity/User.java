@@ -1,8 +1,5 @@
 package cz.muni.fi.ib053.todomanager.entity;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,6 @@ public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-
         private String name;
         private String surname;
         private String username;
@@ -21,9 +17,7 @@ public class User {
 
         @OneToMany(mappedBy = "user",
                 cascade = CascadeType.ALL,
-//                fetch = FetchType.EAGER,
                 orphanRemoval = true)
-//        @Fetch(value = FetchMode.SUBSELECT)
         private List<Task> todos = new ArrayList<>();
 
         public User() {
