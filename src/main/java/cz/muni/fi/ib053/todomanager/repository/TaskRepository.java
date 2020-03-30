@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-        List<Task> findAllByUser_Id(Long id);
+        List<Task> findAllByOwner_Id(Long id);
 
 }

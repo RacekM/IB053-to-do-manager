@@ -5,6 +5,7 @@ import cz.muni.fi.ib053.todomanager.entity.Task;
 import cz.muni.fi.ib053.todomanager.entity.User;
 import cz.muni.fi.ib053.todomanager.repository.TaskRepository;
 import cz.muni.fi.ib053.todomanager.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,6 +20,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Configuration
@@ -28,6 +31,11 @@ public class ToDoManagerApplication {
 
         public static void main(String[] args) {
                 SpringApplication.run(ToDoManagerApplication.class, args);
+        }
+
+        @Bean
+        public ModelMapper modelMapper() {
+                return new ModelMapper();
         }
 
         @Bean
@@ -59,8 +67,8 @@ public class ToDoManagerApplication {
         public CommandLineRunner demo(UserRepository userRepository, TaskRepository taskRepository) {
                 return args -> {
                         User matus = userRepository.save(new User("Matúš", "Raček", "kangaroo", "12345"));
-                        User adam = userRepository.save(new User("Adam", "Vanko", "ReDo", "somOpica"));
-                        User joe = userRepository.save(new User("Joe", "Smith", "smithy", "pass"));
+                        User adam = userRepository.save(new User("Adam", "Vanko", "redo", "heslo"));
+                        User joe = userRepository.save(new User("Joe", "Smith", "joe", "pass"));
 
                         System.out.println(matus.getId());
                         System.out.println(adam.getId());
@@ -73,11 +81,36 @@ public class ToDoManagerApplication {
                         System.out.println(redo.isEmpty() || (adam.equals(redo.get())));
 
                         Task task = new Task();
-                        task.setUser(joe);
+                        task.setOwner(joe);
                         task.setEstimatedFinishTime(10L);
-                        System.out.println(taskRepository.findAllByUser_Id(joe.getId()).isEmpty());
+                        task.setOrderIndex(0L);
+
+                        Task prerequisite1 = new Task();
+                        prerequisite1.setOwner(joe);
+                        prerequisite1.setEstimatedFinishTime(50L);
+                        prerequisite1.setOrderIndex(1L);
+
+                        Task prerequisite2 = new Task();
+                        prerequisite2.setOwner(joe);
+                        prerequisite2.setEstimatedFinishTime(25L);
+                        prerequisite2.setOrderIndex(2L);
+
+                        List<Task> prerequisites = new ArrayList<>();
+                        prerequisites.add(prerequisite1);
+                        task.setPrerequisites(prerequisites);
+
+                        taskRepository.save(prerequisite1);
                         taskRepository.save(task);
-                        System.out.println((taskRepository.findAllByUser_Id(joe.getId()).size() == 1));
+
+                        Task task2 = new Task();
+                        task2.setEstimatedFinishTime(34L);
+                        task2.setPrerequisites(prerequisites);
+                        task2.setOrderIndex(3L);
+                        task2.setOwner(joe);
+                        taskRepository.save(task2);
+
+                        System.out.println(taskRepository.findAllByOwner_Id(joe.getId()).isEmpty());
+                        System.out.println((taskRepository.findAllByOwner_Id(joe.getId()).size() == 1));
                 };
         }
 

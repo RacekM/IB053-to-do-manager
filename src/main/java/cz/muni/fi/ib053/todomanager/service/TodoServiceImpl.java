@@ -40,31 +40,46 @@ public class TodoServiceImpl implements TodoService {
         public List<Task> getTaskList(String username, String password) {
                 login(username, password);
                 User user = userRepository.findByUsername(username);
-                return user.getTodos();
+                return taskRepository.findAllByOwner_Id(user.getId());
         }
 
         @Override
         public Task addTask(String username, String password, Task task) {
                 login(username, password);
                 User user = userRepository.findByUsername(username);
-                task.setUser(user);
+                task.setOwner(user);
+                checkOrdering(user, task);
                 return taskRepository.save(task);
         }
 
         @Override
         public Task changeTask(String username, String password, Long taskId, Task task) {
                 login(username, password);
-                return taskRepository.findById(taskId)
-                        .map(t -> {
-                                //t.setParentTask(task.getParentTask());
-                                //t.setUser(task.getUser());
-                                t.setEstimatedFinishTime(task.getEstimatedFinishTime());
-                                //t.setPrerequisites(task.getPrerequisites());
-                                return taskRepository.save(t);
-                        }).orElseGet(() -> {
-                                task.setId(taskId);
-                                return taskRepository.save(task);
-                        });
+
+                Task oldTask = taskRepository.getOne(taskId);
+                if (oldTask == null) {
+                        throw new EntityNotFoundException("Task", task.getId());
+                }
+
+                oldTask.setEstimatedFinishTime(task.getEstimatedFinishTime());
+                oldTask.setOrderIndex(task.getOrderIndex());
+                oldTask.setOwner(task.getOwner());
+                oldTask.setPrerequisites(task.getPrerequisites());
+                checkOrdering(oldTask.getOwner(), oldTask);
+
+                return taskRepository.save(oldTask);
+        }
+
+        private void checkOrdering(User user, Task task) {
+                List<Task> tasks = taskRepository.findAllByOwner_Id(user.getId());
+                if (tasks.stream().anyMatch(t -> t.getOrderIndex().equals(task.getOrderIndex()))) {
+                        for (Task t : tasks) {
+                                if ((long) t.getOrderIndex() > task.getOrderIndex()) {
+                                        t.setOrderIndex(t.getOrderIndex() + 1);
+                                        taskRepository.save(t);
+                                }
+                        }
+                }
         }
 
         @Override
@@ -76,7 +91,7 @@ public class TodoServiceImpl implements TodoService {
         @Override
         public Long getTotalTime(String username, String password) {
                 login(username, password);
-                return userRepository.findByUsername(username).getTodos().stream().mapToLong(Task::getEstimatedFinishTime).sum();
+                return taskRepository.findAllByOwner_Id(userRepository.findByUsername(username).getId()).stream().mapToLong(Task::getEstimatedFinishTime).sum();
         }
 
         @Override
@@ -87,8 +102,7 @@ public class TodoServiceImpl implements TodoService {
                         throw new EntityNotFoundException("Task", taskId);
                 }
 
-                task.setUser(parentTask.get().getUser());
-                task.setParentTask(parentTask.get());
+                task.setOwner(parentTask.get().getOwner());
                 return taskRepository.save(task);
         }
 

@@ -1,89 +1,48 @@
 package cz.muni.fi.ib053.todomanager.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
+@Setter
 @Entity
 public class Task {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JsonIgnore
-        private User user;
+    @ManyToOne
+    @NotNull
+    private User owner;
 
-        private Long estimatedFinishTime;
+    @NotNull
+    private Long estimatedFinishTime;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JsonBackReference
-        private Task parentTask;
+    @NotNull
+    private Long orderIndex;
 
-        @OneToMany(mappedBy = "parentTask",
-                cascade = CascadeType.ALL,
-                fetch = FetchType.EAGER)
-        @JsonManagedReference
-        private List<Task> prerequisites;
+    @ManyToMany
+    private List<Task> prerequisites;
 
-        public Task() {
-        }
+    public Task() {
+    }
 
-        public Task getParentTask() {
-                return parentTask;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(getOwner(), task.getOwner()) &&
+                Objects.equals(getEstimatedFinishTime(), task.getEstimatedFinishTime());
+    }
 
-        public void setParentTask(Task parentTask) {
-                this.parentTask = parentTask;
-        }
-
-        public void setId(Long id) {
-                this.id = id;
-        }
-
-        public void setEstimatedFinishTime(Long estimatedFinishTime) {
-                this.estimatedFinishTime = estimatedFinishTime;
-        }
-
-        public void setPrerequisites(List<Task> prerequisites) {
-                this.prerequisites = prerequisites;
-        }
-
-        public Long getId() {
-                return id;
-        }
-
-        public User getUser() {
-                return user;
-        }
-
-        public Long getEstimatedFinishTime() {
-                return estimatedFinishTime;
-        }
-
-        public List<Task> getPrerequisites() {
-                return prerequisites;
-        }
-
-        public void setUser(User user) {
-                this.user = user;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
-                Task task = (Task) o;
-                return Objects.equals(getUser(), task.getUser()) &&
-                        Objects.equals(getEstimatedFinishTime(), task.getEstimatedFinishTime());
-        }
-
-        @Override
-        public int hashCode() {
-                return Objects.hash(getUser(), getEstimatedFinishTime());
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOwner(), getEstimatedFinishTime());
+    }
 }

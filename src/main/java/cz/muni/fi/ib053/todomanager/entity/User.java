@@ -1,10 +1,13 @@
 package cz.muni.fi.ib053.todomanager.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
+@Getter
+@Setter
 @Entity(name = "Users")
 public class User {
         @Id
@@ -12,13 +15,9 @@ public class User {
         private Long id;
         private String name;
         private String surname;
+        @Column(unique = true)
         private String username;
         private String password;
-
-        @OneToMany(mappedBy = "user",
-                cascade = CascadeType.ALL,
-                orphanRemoval = true)
-        private List<Task> todos = new ArrayList<>();
 
         public User() {
         }
@@ -29,31 +28,6 @@ public class User {
                 this.username = username;
                 this.password = password;
         }
-
-        public Long getId() {
-                return id;
-        }
-
-        public String getName() {
-                return name;
-        }
-
-        public String getSurname() {
-                return surname;
-        }
-
-        public String getUsername() {
-                return username;
-        }
-
-        public String getPassword() {
-                return password;
-        }
-
-        public List<Task> getTodos() {
-                return todos;
-        }
-
 
         @Override
         public boolean equals(Object o) {
