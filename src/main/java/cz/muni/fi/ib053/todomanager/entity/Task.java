@@ -38,11 +38,12 @@ public class Task {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return Objects.equals(getOwner(), task.getOwner()) &&
-                Objects.equals(getEstimatedFinishTime(), task.getEstimatedFinishTime());
+                Objects.equals(getEstimatedFinishTime(), task.getEstimatedFinishTime()) &&
+                Objects.equals(getOrderIndex(), task.getOrderIndex());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOwner(), getEstimatedFinishTime());
+        return Objects.hash(getOwner(), getEstimatedFinishTime(), getOrderIndex());
     }
 }
