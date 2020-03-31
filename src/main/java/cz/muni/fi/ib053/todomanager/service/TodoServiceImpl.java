@@ -57,10 +57,6 @@ public class TodoServiceImpl implements TodoService {
                 login(username, password);
 
                 Task oldTask = taskRepository.getOne(taskId);
-                if (oldTask == null) {
-                        throw new EntityNotFoundException("Task", task.getId());
-                }
-
                 oldTask.setEstimatedFinishTime(task.getEstimatedFinishTime());
                 oldTask.setOrderIndex(task.getOrderIndex());
                 oldTask.setOwner(task.getOwner());
@@ -85,6 +81,12 @@ public class TodoServiceImpl implements TodoService {
         @Override
         public void removeTask(String username, String password, Long taskId) {
                 login(username, password);
+
+                User owner = userRepository.findByUsername(username);
+                List<Task> tasks = taskRepository.findAllByOwner_Id(owner.getId());
+                for (Task task : tasks) {
+                        task.getPrerequisites().removeIf(t -> t.getId().equals(taskId));
+                }
                 taskRepository.deleteById(taskId);
         }
 
