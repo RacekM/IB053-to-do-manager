@@ -2,7 +2,9 @@ package cz.muni.fi.ib053.todomanager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.fi.ib053.todomanager.TestApplication;
+import cz.muni.fi.ib053.todomanager.dto.ChangeTaskDTO;
 import cz.muni.fi.ib053.todomanager.dto.NewTaskDTO;
+import cz.muni.fi.ib053.todomanager.dto.UserDTO;
 import cz.muni.fi.ib053.todomanager.entity.Task;
 import cz.muni.fi.ib053.todomanager.entity.User;
 import cz.muni.fi.ib053.todomanager.service.TodoService;
@@ -111,36 +113,90 @@ public class TodoControllerTest {
                         .andExpect(jsonPath("$.[*].owner.username", containsInAnyOrder("joe", "joe", "joe")));
         }
 
-        //todo needs to be fixed
         @Test
         public void givenValidCredentials_whenAddTasks_thenTaskWasAdded() throws Exception {
                 String username = "joe";
                 String password = "pass";
-                Task taskToBeReturned = new Task();
-                taskToBeReturned.setId(1L);
                 NewTaskDTO taskToBeAdded = new NewTaskDTO();
                 taskToBeAdded.setEstimatedFinishTime(2L);
+
+                Task taskToBeReturned = new Task();
+                taskToBeReturned.setId(1L);
+                User user = new User();
+                user.setId(1L);
+                user.setName("name");
+                user.setSurname("surname");
+                user.setUsername("username");
+                taskToBeReturned.setOwner(user);
+                taskToBeReturned.setPrerequisites(new ArrayList<>());
+
                 given(service.addTask(eq(username), eq(password), any(Task.class))).willReturn(taskToBeReturned);
                 // when
                 // then
+                NewTaskDTO newTaskDTO = new NewTaskDTO();
+                newTaskDTO.setEstimatedFinishTime(1L);
+                newTaskDTO.setOrderIndex(1L);
+                newTaskDTO.setPrerequisites(new ArrayList<>());
+                UserDTO owner = new UserDTO();
+                owner.setId(1L);
+                owner.setName("name");
+                owner.setSurname("surname");
+                owner.setUsername("username");
+                newTaskDTO.setOwner(owner);
+
                 mvc.perform(MockMvcRequestBuilders
                         .post("/tasks")
                         .header("username", "joe")
                         .header("password", "pass")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{estimatedFinishTime: 1, prerequisites: null, orderIndex:2, owner:null}")
+                        .content(asJsonString(newTaskDTO))
                         .characterEncoding("utf-8"))
                         .andDo(print())
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$", hasSize(1)))
                         .andExpect(jsonPath("$.id", is(1)));
         }
 
-        //todo needs to be implemented
         @Test
-        public void givenValidCredentials_whenChangeTask_thenTaskWasChanged() {
-                assert false;
+        public void givenValidCredentials_whenChangeTask_thenTaskWasChanged() throws Exception {
+                String username = "joe";
+                String password = "pass";
+                Task taskToBeReturned = new Task();
+                taskToBeReturned.setId(1L);
+                taskToBeReturned.setEstimatedFinishTime(100L);
+                User user = new User();
+                user.setId(1L);
+                user.setName("name");
+                user.setSurname("surname");
+                user.setUsername("username");
+                taskToBeReturned.setOwner(user);
+                taskToBeReturned.setPrerequisites(new ArrayList<>());
+
+                given(service.changeTask(eq(username), eq(password), eq(1L), any(Task.class))).willReturn(taskToBeReturned);
+
+
+                ChangeTaskDTO newTaskDTO = new ChangeTaskDTO();
+                newTaskDTO.setEstimatedFinishTime(1L);
+                newTaskDTO.setOrderIndex(1L);
+                newTaskDTO.setPrerequisites(new ArrayList<>());
+                UserDTO owner = new UserDTO();
+                owner.setId(1L);
+                owner.setName("name");
+                owner.setSurname("surname");
+                owner.setUsername("username");
+                newTaskDTO.setOwner(owner);
+
+                mvc.perform(MockMvcRequestBuilders
+                        .put("/tasks/{id}", 1)
+                        .header("username", "joe")
+                        .header("password", "pass")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(newTaskDTO))
+                        .characterEncoding("utf-8"))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.estimatedFinishTime", is(100)));
         }
 
         @Test
