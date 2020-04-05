@@ -29,6 +29,13 @@ public class Task {
     @ManyToMany
     private List<Task> prerequisites;
 
+    public Task(User owner, Long estimatedFinishTime, Long orderIndex, List<Task> prerequisites) {
+        this.owner = owner;
+        this.estimatedFinishTime = estimatedFinishTime;
+        this.orderIndex = orderIndex;
+        this.prerequisites = prerequisites;
+    }
+
     public Task() {
     }
 
