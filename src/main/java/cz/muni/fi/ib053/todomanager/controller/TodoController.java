@@ -11,6 +11,11 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+/**
+ * Main controller of the todoManager application
+ */
+
 @RestController
 public class TodoController {
         private final TodoService todoService;

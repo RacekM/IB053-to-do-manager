@@ -46,19 +46,18 @@ public class ToDoManagerApplication {
                         .paths(Predicates.not(PathSelectors.regex("/error.*")))
                         .build()
                         .apiInfo(apiInfo())
-                        .useDefaultResponseMessages(false)
-                        ;
+                        .useDefaultResponseMessages(false);
         }
 
         private ApiInfo apiInfo() {
 
                 return new ApiInfoBuilder()
-                        .title("My REST API")
-                        .description("Some custom description of API.")
-                        .termsOfServiceUrl("Terms of service")
-                        .contact(new Contact("John Doe", "www.example.com", "myeaddress@company.com"))
-                        .license("License of API")
-                        .licenseUrl("API license URL")
+                        .title("Todo-manager REST API")
+                        .description("REST API of the application used for task managing.")
+                        .contact(new Contact("Matus Racek", "", "445411@mail.muni.cz"))
+                        .contact(new Contact("Adam Vanko", "", "445310@mail.muni.cz"))
+                        .license("Apache 2.0")
+                        .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                         .version("1.0")
                         .build();
         }
