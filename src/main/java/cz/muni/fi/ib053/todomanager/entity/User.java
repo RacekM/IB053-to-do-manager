@@ -2,6 +2,7 @@ package cz.muni.fi.ib053.todomanager.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -9,6 +10,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity(name = "Users")
+@ToString
 public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +19,7 @@ public class User {
         private String surname;
         @Column(unique = true)
         private String username;
+        @ToString.Exclude
         private String password;
 
         public User() {

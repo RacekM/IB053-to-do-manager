@@ -28,7 +28,7 @@ public class TodoServiceImpl implements TodoService {
 
         @Override
         public Boolean login(String username, String password) {
-                LOG.info("Logging works");
+                LOG.debug("Username: \"{}\" is trying to log in.", username);
                 User user = userRepository.findByUsername(username);
                 if (user == null) {
                         throw new UnauthorizedException(username);
@@ -38,6 +38,7 @@ public class TodoServiceImpl implements TodoService {
 
         @Override
         public List<Task> getTaskList(String username, String password) {
+                LOG.debug("Username: \"{}\" is trying to get all tasks.", username);
                 login(username, password);
                 User user = userRepository.findByUsername(username);
                 return taskRepository.findAllByOwner_Id(user.getId());
@@ -45,6 +46,7 @@ public class TodoServiceImpl implements TodoService {
 
         @Override
         public Task addTask(String username, String password, Task task) {
+                LOG.debug("Username: \"{}\" is trying to add new task. Task specification is: \"{}\".", username, task);
                 login(username, password);
                 User user = userRepository.findByUsername(username);
                 task.setOwner(user);
@@ -54,8 +56,8 @@ public class TodoServiceImpl implements TodoService {
 
         @Override
         public Task changeTask(String username, String password, Long taskId, Task task) {
+                LOG.debug("Username: \"{}\" is trying to change task with id {}. New task specification is: \"{}\".", username, taskId, task);
                 login(username, password);
-
                 Task oldTask = taskRepository.getOne(taskId);
                 oldTask.setEstimatedFinishTime(task.getEstimatedFinishTime());
                 oldTask.setOrderIndex(task.getOrderIndex());
@@ -80,28 +82,35 @@ public class TodoServiceImpl implements TodoService {
 
         @Override
         public void removeTask(String username, String password, Long taskId) {
+                LOG.debug("Username: \"{}\" is trying to remove task with id {}.", username, taskId);
                 login(username, password);
-
                 User owner = userRepository.findByUsername(username);
                 List<Task> tasks = taskRepository.findAllByOwner_Id(owner.getId());
                 for (Task task : tasks) {
-                        task.getPrerequisites().removeIf(t -> t.getId().equals(taskId));
+                        task.getPrerequisites()
+                                .removeIf(t -> t.getId().equals(taskId));
                 }
                 taskRepository.deleteById(taskId);
         }
 
         @Override
         public Long getTotalTime(String username, String password) {
+                LOG.debug("Username: \"{}\" wants to get total time of his tasks.", username);
                 login(username, password);
-                return taskRepository.findAllByOwner_Id(userRepository.findByUsername(username).getId()).stream().mapToLong(Task::getEstimatedFinishTime).sum();
+                return taskRepository
+                        .findAllByOwner_Id(userRepository.findByUsername(username).getId())
+                        .stream()
+                        .mapToLong(Task::getEstimatedFinishTime)
+                        .sum();
         }
 
         @Override
-        public Task addSubTask(String username, String password, Long taskId, Task task) {
+        public Task addSubTask(String username, String password, Long parentTaskId, Task task) {
+                LOG.debug("Username: \"{}\" wants to add  subTask to task with id {}. Subtask specification is \"{}\".", username, parentTaskId, task);
                 login(username, password);
-                Optional<Task> parentTask = taskRepository.findById(taskId);
+                Optional<Task> parentTask = taskRepository.findById(parentTaskId);
                 if (parentTask.isEmpty()) {
-                        throw new EntityNotFoundException("Task", taskId);
+                        throw new EntityNotFoundException("Parent task", parentTaskId);
                 }
 
                 task.setOwner(parentTask.get().getOwner());
