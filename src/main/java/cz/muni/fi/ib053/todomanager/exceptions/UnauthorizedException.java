@@ -12,4 +12,5 @@ public class UnauthorizedException extends RuntimeException {
         public UnauthorizedException(String username) {
                 super(String.format("Combination of your username and password is no correct. Used username was \"%s\"", username));
         }
+
 }

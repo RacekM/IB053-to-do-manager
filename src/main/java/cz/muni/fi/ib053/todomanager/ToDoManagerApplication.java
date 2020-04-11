@@ -50,7 +50,6 @@ public class ToDoManagerApplication {
         }
 
         private ApiInfo apiInfo() {
-
                 return new ApiInfoBuilder()
                         .title("Todo-manager REST API")
                         .description("REST API of the application used for task managing.")

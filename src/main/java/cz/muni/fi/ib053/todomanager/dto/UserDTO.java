@@ -12,20 +12,20 @@ import javax.validation.constraints.NotNull;
 @ApiModel(description = "DTO class used for retrieving details about the corresponding user.")
 public class UserDTO {
 
-    @NotNull
-    @ApiModelProperty(notes = "Database generated id of the user", required = true)
-    private Long id;
+        @NotNull
+        @ApiModelProperty(notes = "Database generated id of the user", required = true)
+        private Long id;
 
-    @NotNull
-    @ApiModelProperty(notes = "First name of the user", required = true)
-    private String name;
+        @NotNull
+        @ApiModelProperty(notes = "First name of the user", required = true)
+        private String name;
 
-    @NotNull
-    @ApiModelProperty(notes = "Surname of the user", required = true)
-    private String surname;
+        @NotNull
+        @ApiModelProperty(notes = "Surname of the user", required = true)
+        private String surname;
 
-    @NotNull
-    @ApiModelProperty(notes = "Username of the user", required = true)
-    private String username;
+        @NotNull
+        @ApiModelProperty(notes = "Username of the user", required = true)
+        private String username;
 
 }
