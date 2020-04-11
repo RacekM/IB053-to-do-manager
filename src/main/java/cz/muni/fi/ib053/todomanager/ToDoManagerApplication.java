@@ -54,7 +54,6 @@ public class ToDoManagerApplication {
                 return new ApiInfoBuilder()
                         .title("Todo-manager REST API")
                         .description("REST API of the application used for task managing.")
-                        .contact(new Contact("Matus Racek", "", "445411@mail.muni.cz"))
                         .contact(new Contact("Adam Vanko", "", "445310@mail.muni.cz"))
                         .license("Apache 2.0")
                         .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
