@@ -14,7 +14,5 @@ public class NewTaskDTO {
     @NotNull
     private Long orderIndex;
     @NotNull
-    private UserDTO owner;
-    @NotNull
     private List<TaskDTO> prerequisites;
 }

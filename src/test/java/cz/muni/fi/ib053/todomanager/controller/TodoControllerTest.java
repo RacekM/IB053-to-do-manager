@@ -142,7 +142,6 @@ public class TodoControllerTest {
                 owner.setName("name");
                 owner.setSurname("surname");
                 owner.setUsername("username");
-                newTaskDTO.setOwner(owner);
 
                 mvc.perform(MockMvcRequestBuilders
                         .post("/tasks")
