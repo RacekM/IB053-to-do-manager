@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Exception used for reporting that user with given username tried to login into application with wrong password.
  */
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
+@ResponseStatus(HttpStatus.UNAUTHORIZED, reason = "The user with given username does not exists or the password is incorrect")
 public class UnauthorizedException extends RuntimeException {
 
         public UnauthorizedException(String username) {
