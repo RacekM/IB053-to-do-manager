@@ -62,15 +62,4 @@ public interface TodoService {
          * @return Total time of the all tasks which are assigned to the user with given credentials.
          */
         Long getTotalTime(String username, String password);
-
-        /**
-         * Method used for adding subtask to already existing task.
-         *
-         * @param username Username of the user
-         * @param password Password of the user
-         * @param taskId   Id of the tasks to witch the subtask should be assigned to
-         * @param subTask  Specification of the subtask
-         * @return Total time of the all tasks which are assigned to the user with given credentials
-         */
-        Task addSubTask(String username, String password, Long taskId, Task subTask);
 }

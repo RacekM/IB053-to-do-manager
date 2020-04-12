@@ -2,7 +2,6 @@ package cz.muni.fi.ib053.todomanager.service;
 
 import cz.muni.fi.ib053.todomanager.entity.Task;
 import cz.muni.fi.ib053.todomanager.entity.User;
-import cz.muni.fi.ib053.todomanager.exceptions.EntityNotFoundException;
 import cz.muni.fi.ib053.todomanager.exceptions.UnauthorizedException;
 import cz.muni.fi.ib053.todomanager.repository.TaskRepository;
 import cz.muni.fi.ib053.todomanager.repository.UserRepository;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -102,18 +100,4 @@ public class TodoServiceImpl implements TodoService {
                         .mapToLong(Task::getEstimatedFinishTime)
                         .sum();
         }
-
-        @Override
-        public Task addSubTask(String username, String password, Long parentTaskId, Task task) {
-                log.debug("Username: \"{}\" wants to add  subTask to task with id {}. Subtask specification is \"{}\".", username, parentTaskId, task);
-                login(username, password);
-                Optional<Task> parentTask = taskRepository.findById(parentTaskId);
-                if (parentTask.isEmpty()) {
-                        throw new EntityNotFoundException("Parent task", parentTaskId);
-                }
-
-                task.setOwner(parentTask.get().getOwner());
-                return taskRepository.save(task);
-        }
-
 }
