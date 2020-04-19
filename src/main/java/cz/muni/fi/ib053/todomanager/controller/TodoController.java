@@ -75,7 +75,7 @@ public class TodoController {
                 @RequestHeader("password") String password,
                 @ApiParam(name = "taskId", value = "Id of the task which should be updated", required = true)
                 @PathVariable Long taskId,
-                @ApiParam(name = "taskId", value = "New values which should be updated in existing task with given id", required = true)
+                @ApiParam(name = "changeTaskDTO", value = "New values which should be updated in existing task with given id", required = true)
                 @RequestBody @Valid ChangeTaskDTO changeTaskDTO) {
                 Task task = modelMapper.map(changeTaskDTO, Task.class);
                 return toTaskDTO(todoService.changeTask(username, password, taskId, task));
