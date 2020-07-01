@@ -1,0 +1,10 @@
+package cz.muni.fi.ib053.todomanager.repository;
+
+import cz.muni.fi.ib053.todomanager.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+
+        User findByUsername(String username);
+
+}
